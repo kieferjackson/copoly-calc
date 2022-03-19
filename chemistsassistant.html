@@ -24,8 +24,15 @@
     <input type="text" name=funcA_num" placeholder="1" id="funcA_num" class="input_field int">
     <input type="text" name=funcB_num" placeholder="2" id="funcB_num" class="input_field int">
     <br>
-    <input type="text" name=funcA_eq" placeholder="1.0" id="funcA_eq" class="input_field float">
-    <input type="text" name=funcB_eq" placeholder="1.0" id="funcB_eq" class="input_field float">
+    <div name="molar_eq" id="neutral">
+        <div id="funcA_eq">
+            <button type="button" onclick="toggleMolarEQ('A')" class="input_field_float">xs A</button>
+        </div>
+        <br>
+        <div id="funcB_eq">
+            <button type="button" onclick="toggleMolarEQ('B')" class="input_field_float">xs B</button>
+        </div>
+    </div>
     <br>
     <button type="button" onclick="getInputValues()">Submit</button>
 </form>

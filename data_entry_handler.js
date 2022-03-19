@@ -12,6 +12,8 @@ class Monomer {
 funcStats = [];
 monomerStats = [];
 
+funcID = ['A', 'B'];
+
 function getInputValues() {
     var inputs = document.getElementsByClassName("input_field");
 
@@ -29,11 +31,20 @@ function getInputValues() {
         funcStats = [];
     
         for (var i = 0 ; i < 2 ; i++) {
+
+            var molar_eq_value;
+
+            if (document.getElementById("func" + funcID[i] + "_eq").childElementCount > 1) {
+                molar_eq_value = parseFloat(document.getElementById("molar_eq_input_field_" + funcID[i]).value);
+            } else {
+                molar_eq_value = 1.0;
+            }
+
             funcStats[i] = {
                 percent_type: percentTypeChecker(),
                 name: inputs[i + 2].value,
                 num: parseInt(inputs[i + 4].value),
-                molar_eq: parseFloat(inputs[i + 6].value),
+                molar_eq: molar_eq_value,
                 start: 0 + parseInt(inputs[4].value) * i,
                 end: parseInt(inputs[4].value) + parseInt(inputs[5].value) * i,
                 unknown: null
@@ -169,26 +180,32 @@ function checkDataTypes(data_type, input_class) {
         case 'float':   // Float Checker
             console.log("checking float values...");
             let raw_float_data = document.getElementsByClassName(input_class + " float");
+            var floatAcceptable = true;
+            debugger;
 
             var i = 0;
-            do {
+            if (raw_float_data.childElementCount > 0) while (floatAcceptable === true && i < raw_float_data.length) {
                 console.log(raw_float_data[i].value);
 
                 if (input_class === "dyn_input_field" && raw_float_data[i].value === '') {
-                    var floatAcceptable = true;
+                    debugger;
+                    floatAcceptable = true;
                 } else if (raw_float_data[i].value <= 0) {
-                    console.log("ERROR - Invalid data at checkDataTypes function (Float)\n\t*Values of 0 or blank strings are not accepted.");
-                    var floatAcceptable = false;
+                    debugger;
+                    console.log("ERROR - Invalid data at checkDataTypes function (Float)\n\t*Values less than or equal to 0 are not accepted.");
+                    floatAcceptable = false;
                 } else if (raw_float_data[i].value.match(/\d+/) != null) {
-                    var floatAcceptable = true;
+                    debugger;
+                    floatAcceptable = true;
                 } else {
-                    var floatAcceptable = false;
+                    debugger;
+                    floatAcceptable = false;
                     console.log("ERROR - Invalid data at checkDataTypes function (Float)\n\t*One of your input fields may be missing a value.");
                 }
-
+                
                 i++;
 
-            } while (floatAcceptable === true && i < raw_float_data.length);
+            }
 
             return floatAcceptable;
 
@@ -197,6 +214,82 @@ function checkDataTypes(data_type, input_class) {
     }
 
     return false;
+}
+
+function toggleMolarEQ(xs_func_group) {
+    console.log(xs_func_group);
+
+    var current_state = document.getElementsByName("molar_eq")[0].id;
+
+    switch (current_state) {
+        case 'neutral':
+            let eq = document.getElementById("func" + xs_func_group + "_eq");
+            let f = createInputField(xs_func_group);
+            eq.append(f);
+
+            updated_state = "xs_" + xs_func_group;
+            document.getElementsByName("molar_eq")[0].id = updated_state;
+            console.log(document.getElementsByName("molar_eq")[0].id);
+            break;
+
+        case 'xs_A':
+            // Toggle A off
+            fieldToRemove = document.getElementById("molar_eq_input_field_A");
+            fieldToRemove.remove();
+
+            switch (xs_func_group) {
+                case 'A':
+                    // Update status
+                    document.getElementsByName("molar_eq")[0].id = 'neutral';
+
+                    break;
+
+                case 'B':
+                    let eq = document.getElementById("func" + xs_func_group + "_eq");
+                    let f = createInputField(xs_func_group);
+                    eq.append(f);
+
+                    updated_state = "xs_" + xs_func_group;
+                    document.getElementsByName("molar_eq")[0].id = updated_state;
+                    console.log(document.getElementsByName("molar_eq")[0].id);
+                    break;
+            }
+            break;
+
+        case 'xs_B':
+            // Toggle B off
+            fieldToRemove = document.getElementById("molar_eq_input_field_B");
+            fieldToRemove.remove();
+
+            switch (xs_func_group) {
+                case 'B':
+                    // Update status
+                    document.getElementsByName("molar_eq")[0].id = 'neutral';
+
+                    break;
+
+                case 'A':
+                    let eq = document.getElementById("func" + xs_func_group + "_eq");
+                    let f = createInputField(xs_func_group);
+                    eq.append(f);
+
+                    updated_state = "xs_" + xs_func_group;
+                    document.getElementsByName("molar_eq")[0].id = updated_state;
+                    console.log(document.getElementsByName("molar_eq")[0].id);
+                    break;
+            }
+            break;
+    }
+    
+}
+
+function createInputField(xs_func_group) {
+    let field = document.createElement("input");
+    field.setAttribute("type", "text");
+    field.setAttribute("id", "molar_eq_input_field_" + xs_func_group);
+    field.setAttribute("class", "input_field float");
+
+    return field;
 }
 
 function checkParity(var1, var2) {
